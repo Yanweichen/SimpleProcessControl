@@ -1,4 +1,4 @@
-package com.ywc.mgt.processcontrol.test;
+package com.ywc.test;
 
 /**
  * @author yanwe

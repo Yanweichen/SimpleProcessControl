@@ -1,4 +1,4 @@
-package com.ywc.mgt.processcontrol.test;
+package com.ywc.test;
 
 import com.ywc.mgt.processcontrol.base.annotation.FunctionHandlerClass;
 import com.ywc.mgt.processcontrol.base.annotation.FunctionHandlerMethod;
