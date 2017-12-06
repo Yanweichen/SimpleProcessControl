@@ -1,0 +1,10 @@
+/common/
+/logs/
+
+*.class
+/.idea/
+
+/.gradle/
+classes/
+build/
+out/
