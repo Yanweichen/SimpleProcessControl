@@ -2,14 +2,27 @@ group 'com.ywc'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
 
 sourceCompatibility = 1.8
+
+//设置编码
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 ext {
     mavenUrl = "http://maven.aliyun.com/nexus/content/groups/public"
     jdkVersion = 1.8
     projectGroup = "com.ywc"
     projectName = "SimpleProcessControl"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+    }
 }
 
 repositories {
