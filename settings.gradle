@@ -1,2 +1,4 @@
 rootProject.name = 'SimpleProcessControl'
+include 'core'
+include 'web'
 

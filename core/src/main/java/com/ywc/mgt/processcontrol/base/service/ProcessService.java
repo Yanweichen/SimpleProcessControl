@@ -1,7 +1,7 @@
 package com.ywc.mgt.processcontrol.base.service;
 
-import com.ywc.mgt.processcontrol.base.model.ProcessOrder;
 import com.ywc.mgt.processcontrol.base.model.ProcessHandler;
+import com.ywc.mgt.processcontrol.base.model.ProcessOrder;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public interface ProcessService {
      * @param bmpId 流程图Id
      * @param processOrders 执行顺序
      */
-    String createProcess(String bmpId,List<ProcessOrder> processOrders);
+    String createProcess(String bmpId, List<ProcessOrder> processOrders);
 
     /**
      * 清理异常进件
