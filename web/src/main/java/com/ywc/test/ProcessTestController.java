@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,7 +45,7 @@ public class ProcessTestController {
 
     @RequestMapping("/all")
     public ResultTo getAll(){
-        List<ProcessHandler> allProcessHandler = processService.getAllProcess(HandlerGroup.GROUP_ONE);
+        List<ProcessHandler> allProcessHandler = processService.getAllProcessFunction(HandlerGroup.GROUP_ONE);
         return new ResultTo().setData(allProcessHandler);
     }
 
@@ -55,7 +57,7 @@ public class ProcessTestController {
 
     @RequestMapping("/clean")
     public ResultTo clean(){
-        processService.cleanUnfinishedFunction();
+        processService.cleanUnfinishedFunction(Collections.singletonList(TestTwo.class));
         return new ResultTo();
     }
 

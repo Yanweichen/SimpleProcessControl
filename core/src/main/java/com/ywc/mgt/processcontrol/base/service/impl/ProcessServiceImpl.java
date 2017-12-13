@@ -16,8 +16,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.ywc.mgt.processcontrol.base.enums.ProcessConstant.DEFAULT_NEED_CLEAN_VALUE;
-
 
 /**
  * 产品后续功能Service实现类
@@ -34,7 +32,7 @@ public class ProcessServiceImpl implements ProcessService {
     private ProcessCRUDService processCRUDService;
 
     @Override
-    public List<ProcessHandler> getAllProcess(String bmpId){
+    public List<ProcessHandler> getAllProcessFunction(String bmpId){
         return BeanFactoryUtil.getBeansWithAnnotation(FunctionHandlerClass.class).entrySet().stream()
                 .map(entry -> getProcessHandler(entry.getValue()))
                 .filter(processFunction -> processFunction.getBmpIds().contains(bmpId))
@@ -43,9 +41,10 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public List<ProcessHandler> getCustomProcess(String processId) {
-        Process process = processCRUDService.getProcess(processId);
-        List<ProcessOrder> processOrders = processCRUDService.getProcess(processId).getProcessOrder();
-        return sortHandler(process.getBpmId(), processOrders);
+        List<ProcessSchedule> processSchedule = processCRUDService.getProcess(processId).getProcessSchedule();
+        return processSchedule.stream()
+                .map(schedule -> getProcessHandler(BeanFactoryUtil.getBean(schedule.getProcessClass())))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -55,7 +54,7 @@ public class ProcessServiceImpl implements ProcessService {
             throw new RuntimeException("bmpId或流程顺序不能为空");
         }
         //获得主体所对应的方法
-        List<ProcessHandler> processHandlers = sortHandler(bmpId,processOrders);
+        List<ProcessHandler> processHandlers = sortHandler(getAllProcessFunction(bmpId),processOrders);
         List<ProcessSchedule> processSchedule = processHandlers.stream()
                 .map(function -> ProcessSchedule.ProcessScheduleBuilder.aProcessSchedule()
                         .withProcessClass(function.getProcessClass()).withProcessName(function.getProcessName())
@@ -72,19 +71,11 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public void cleanUnfinishedFunction() {
-        List<ProcessHandler> needCleanProcessHandlers = BeanFactoryUtil
-                .getBeansWithAnnotation(FunctionHandlerClass.class).values()
-                .stream().map(this::getProcessHandler)
-                .filter(processFunction -> Arrays.stream(processFunction.getNeedCleanStatus())
-                        .noneMatch(status -> Objects.equals(DEFAULT_NEED_CLEAN_VALUE,status)))
-                .collect(Collectors.toList());
-        List<String> needCleanSubjects = processCRUDService.getNeedCleanSubjects(needCleanProcessHandlers
-                .stream().flatMap(function -> Arrays.stream(function.getNeedCleanStatus()).boxed())
-                .collect(Collectors.toList()));
-        needCleanProcessHandlers.forEach(function -> needCleanSubjects
-                .forEach(processId -> ProcessDispatcher.findProcessHandler(function.getProcessClass()
-                            , processId, ProcessDispatcher::executeFunction)));
+    public void cleanUnfinishedFunction(List<Class> classList) {
+        List<Process> allProcess = processCRUDService.getAllProcess();
+        classList.forEach(function -> allProcess
+                .forEach(process -> ProcessDispatcher.findProcessHandler(function.getSimpleName()
+                            , process.getProcessId(), ProcessDispatcher::executeFunction)));
     }
 
     private ProcessHandler getProcessHandler(Object object){
@@ -98,20 +89,15 @@ public class ProcessServiceImpl implements ProcessService {
                 .withProcessName(functionHandlerClass.processName()).build();
     }
 
-    private List<ProcessHandler> sortHandler(String bmpId, List<ProcessOrder> processOrders) {
-        //排序
-        processOrders.sort(Comparator.comparing(ProcessOrder::getProcessOrder));
-        List<ProcessHandler> allProcessHandler = getAllProcess(bmpId);
-        List<ProcessHandler> sortRealProcessHandler = new ArrayList<>();
-        for (ProcessOrder processOrder : processOrders) {
-            for (ProcessHandler processHandler : allProcessHandler) {
-                if (processHandler.getProcessClass()
-                        .equalsIgnoreCase(processOrder.getProcessClass())){
-                    sortRealProcessHandler.add(processHandler);
-                }
-            }
-        }
-        return sortRealProcessHandler;
+    private List<ProcessHandler> sortHandler(List<ProcessHandler> allProcessHandler, List<ProcessOrder> processOrders) {
+        return processOrders.stream()
+                //排序
+                .sorted(Comparator.comparing(ProcessOrder::getProcessOrder))
+                .map(processOrder -> allProcessHandler.stream()
+                .filter(processHandler -> processHandler.getProcessClass()
+                        .equalsIgnoreCase(processOrder.getProcessClass())).findFirst())
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
 }

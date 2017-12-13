@@ -26,12 +26,4 @@ public @interface FunctionHandlerClass {
      * @return 流程图ID
      */
     String [] bmpIds();
-
-    /**
-     * 对应需要清理的状态集合
-     *
-     * @return 状态集合
-     */
-    int [] needCleanStatus() default {-1};
-
 }

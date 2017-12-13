@@ -13,11 +13,6 @@ import java.util.List;
 public class ProcessHandle extends ProcessCRUDService {
 
     @Override
-    public List<String> getNeedCleanSubjects(List<Integer> status) {
-        return null;
-    }
-
-    @Override
     public void processEndHandle(String processId) {
 
     }

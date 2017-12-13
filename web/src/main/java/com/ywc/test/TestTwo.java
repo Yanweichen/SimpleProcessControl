@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * createTime 2017-11-2017/11/6 19:31
  */
 @Service
-@FunctionHandlerClass(processName = "流程二",bmpIds = {HandlerGroup.GROUP_ONE},needCleanStatus = {1})
+@FunctionHandlerClass(processName = "流程二",bmpIds = {HandlerGroup.GROUP_ONE})
 public class TestTwo {
 
     @FunctionHandlerMethod

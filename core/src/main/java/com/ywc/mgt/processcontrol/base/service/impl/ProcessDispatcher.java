@@ -57,8 +57,8 @@ public class ProcessDispatcher {
      * @return true/false
      */
     public static boolean isHaveFunction(String processId, Class... classes){
-        List<ProcessHandler> functions = processService.getCustomProcess(processId);
-        return Arrays.stream(classes).allMatch(clazz -> functions.stream()
+        List<ProcessSchedule> processSchedule = processCRUDService.getProcess(processId).getProcessSchedule();
+        return Arrays.stream(classes).allMatch(clazz -> processSchedule.stream()
                 .anyMatch(function -> clazz.getSimpleName()
                         .equalsIgnoreCase(function.getProcessClass())));
     }

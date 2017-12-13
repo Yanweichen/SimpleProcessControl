@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 流程CRUD Service
@@ -52,13 +53,7 @@ public abstract class ProcessCRUDService {
      */
     public Process getProcess(String processId) {
         ProcessPo processPo = processMapper.selectByPrimaryKey(processId);
-        Process process = new Process();
-        process.setProcessId(processPo.getProcessId());
-        process.setBpmId(processPo.getBpmId());
-        process.setProcessOrder(getProcessOrders(processPo));
-        process.setProcessSession(getProcessSession(processPo.getProcessSession()));
-        process.setProcessSchedule(JSON.parseArray(processPo.getProcessSchedule(),ProcessSchedule.class));
-        return process;
+        return convertProcessPo(processPo);
     }
 
     /**
@@ -93,12 +88,13 @@ public abstract class ProcessCRUDService {
     public abstract void processEndHandle(String processId);
 
     /**
-     * 根据配置的需要清理的状态返回主体id列表
+     * 获取全部流程
      *
-     * @param status 状态列表
-     * @return 主体id列表
+     * @return 流程
      */
-    public abstract List<String> getNeedCleanSubjects(List<Integer> status);
+    public List<Process> getAllProcess(){
+        return processMapper.selectAll().stream().map(this::convertProcessPo).collect(Collectors.toList());
+    }
 
     private List<ProcessOrder> getProcessOrders(ProcessPo processPo) {
         JSONArray jsonArray = JSON.parseArray(processPo.getProcessOrder());
@@ -134,6 +130,16 @@ public abstract class ProcessCRUDService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Process convertProcessPo(ProcessPo processPo) {
+        Process process = new Process();
+        process.setProcessId(processPo.getProcessId());
+        process.setBpmId(processPo.getBpmId());
+        process.setProcessOrder(getProcessOrders(processPo));
+        process.setProcessSession(getProcessSession(processPo.getProcessSession()));
+        process.setProcessSchedule(JSON.parseArray(processPo.getProcessSchedule(),ProcessSchedule.class));
+        return process;
     }
 
 }

@@ -18,7 +18,7 @@ public interface ProcessService {
      *
      * @return 所有流程方法
      */
-    List<ProcessHandler> getAllProcess(String bpmId);
+    List<ProcessHandler> getAllProcessFunction(String bpmId);
 
     /**
      * 根据进件Id获得产品后续功能列表
@@ -39,6 +39,5 @@ public interface ProcessService {
     /**
      * 清理异常进件
      */
-    void cleanUnfinishedFunction();
-
+    void cleanUnfinishedFunction(List<Class> classList);
 }
