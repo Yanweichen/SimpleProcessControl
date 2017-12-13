@@ -83,7 +83,6 @@ public class ProcessServiceImpl implements ProcessService {
         return new RuntimeException("流程类不存在:"+object); });
         FunctionHandlerClass functionHandlerClass = target.getClass().getAnnotation(FunctionHandlerClass.class);
         return ProcessHandler.ProcessFunctionBuilder.aProcessFunction()
-                .withNeedCleanStatus(functionHandlerClass.needCleanStatus())
                 .withBmpIds(Stream.of(functionHandlerClass.bmpIds()).collect(Collectors.toList()))
                 .withProcessHandler(target)
                 .withProcessName(functionHandlerClass.processName()).build();
