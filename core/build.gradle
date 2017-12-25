@@ -22,8 +22,8 @@ repositories {
 dependencies {
     compile(
             //spring
-            "org.springframework.boot:spring-boot-starter-web:1.5.9.RELEASE",
-            "org.springframework.boot:spring-boot-starter-parent:1.5.9.RELEASE",
+            "org.springframework.boot:spring-boot-starter-actuator:1.5.9.RELEASE",
+            "org.springframework.boot:spring-boot-configuration-processor:1.5.9.RELEASE",
             //mybatis
             "org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.1",
             "tk.mybatis:mapper-spring-boot-starter:1.1.5",
@@ -32,6 +32,8 @@ dependencies {
             "com.alibaba:druid-spring-boot-starter:1.1.0",
             //fastjson
             "com.alibaba:fastjson:1.2.41",
+            //jackson
+            "com.fasterxml.jackson.core:jackson-databind:2.9.3",
 
             //H2
             "com.h2database:h2:1.4.196",

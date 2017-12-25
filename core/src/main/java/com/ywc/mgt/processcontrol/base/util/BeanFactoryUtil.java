@@ -5,8 +5,10 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -39,7 +41,12 @@ public class BeanFactoryUtil implements BeanFactoryPostProcessor {
      * @throws BeansException 获取bean失败异常
      */
     public static <T> T getBean(String name) throws BeansException {
-        return (T) beanFactory.getBean(name);
+        if (!StringUtils.hasLength(name)){
+            return null;
+        }
+        char[] chars = name.toCharArray();
+        chars[0] = String.valueOf(chars[0]).toLowerCase().charAt(0);
+        return (T) beanFactory.getBean(String.valueOf(chars));
     }
 
     /**
